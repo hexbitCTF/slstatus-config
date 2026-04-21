@@ -65,32 +65,31 @@ static const char unknown_str[] = "n/a";
  * wifi_perc           WiFi signal in percent          interface name (wlan0)
  */
 static const struct arg args[] = {
-	/* function format          argument */
-	//{ datetime, "%s",           "%F %T" },
-	//{ wifi_perc, "W: (%3s%% on ", "wlan0" },
-        //{ netspeed_rx, "%sB/s  ", "wlan0" },
-    { run_command, "%s;", "sh -c 'var=$(cat /tmp/dwm_center_text); echo \"$var\"'" },
+    { run_command, "%s;", "sh -c 'var=$(cat /tmp/dwm_center_text 2>/dev/null); echo \"$var\"'" },
     { run_command, " %s  ", "amixer sget Master | awk -F\"[][]\" '/%/ { print $2 }' | head -n1" },
+    { run_command, " %s%%  ", "light -G | cut -d. -f1" },
     { cpu_perc, " %s%%  ", NULL },
     { ram_perc, " %s%%  ", NULL },
-    { run_command, "%s", "\
-	if connmanctl services | grep -q '^\\*'; then \
-    	printf '  '; \
-	else \
-    	printf '  '; \
-	fi" },
-{ run_command, "%s", "\
-    BAT=$(cat /sys/class/power_supply/BAT0/capacity); \
-    STATUS=$(cat /sys/class/power_supply/BAT0/status); \
-    if [ \"$STATUS\" = \"Charging\" ]; then ICON='🔋⚡'; \
-    elif [ \"$BAT\" -ge 100 ]; then ICON='🔋⚡'; \
-    elif [ \"$BAT\" -ge 90 ]; then ICON='🔋'; \
-    elif [ \"$BAT\" -ge 70 ]; then ICON='🔋'; \
-    elif [ \"$BAT\" -ge 50 ]; then ICON='🔋'; \
-    elif [ \"$BAT\" -ge 30 ]; then ICON='🔋'; \
-    else ICON='🪫'; fi; \
-    printf '%s %s%%  ' \"$ICON\" \"$BAT\""
-},
-
-    { datetime, " %s", "%a %b %d %I:%M %p" },
+    { run_command, "%s",
+      "sh -c 'if connmanctl services | grep -q \"^*\"; then printf \"  \"; else printf \"  \"; fi'" },
+    { run_command, "%s",
+      "sh -c '"
+      "BAT=$(cat /sys/class/power_supply/BAT0/capacity); "
+      "STATUS=$(cat /sys/class/power_supply/BAT0/status); "
+      "if [ \"$STATUS\" = \"Charging\" ]; then "
+      "    ICON=⚡; "
+      "elif [ \"$BAT\" -ge 95 ]; then "
+      "    ICON=; "
+      "elif [ \"$BAT\" -ge 75 ]; then "
+      "    ICON=; "
+      "elif [ \"$BAT\" -ge 50 ]; then "
+      "    ICON=; "
+      "elif [ \"$BAT\" -ge 25 ]; then "
+      "    ICON=; "
+      "else "
+      "    ICON=; "
+      "fi; "
+      "printf \"%s %s%%  \" \"$ICON\" \"$BAT\";'"
+    },
+    { datetime, "%s", "%a %b %d %I:%M %p" },
 };
