@@ -65,7 +65,8 @@ static const char unknown_str[] = "n/a";
  * wifi_perc           WiFi signal in percent          interface name (wlan0)
  */
 static const struct arg args[] = {
-    { run_command, "%s;", "sh -c 'var=$(cat /tmp/dwm_center_text 2>/dev/null); echo \"$var\"'" },
+ /* { run_command, "%s;", "sh -c 'var=$(cat /tmp/dwm_center_text 2>/dev/null); echo \"$var\"'" }, */
+    { run_command, "%s", "printf ';'" },
     { run_command, " %s  ", "amixer sget Master | awk -F\"[][]\" '/%/ { print $2 }' | head -n1" },
     { run_command, " %s%%  ", "light -G | cut -d. -f1" },
     { cpu_perc, " %s%%  ", NULL },
